@@ -10,12 +10,13 @@ class Settings(BaseSettings):
     api_version: str = "0.1.0"
 
     # Qdrant
-    qdrant_url: str
+    qdrant_url: str = "http://localhost:6333"
     qdrant_api_key: str | None = None
     collection_name: str = "mental_health_knowledge_base"
 
     # Embeddings
     embedding_model: str = "cohere/embed-v4.0"
+    embedding_dimension: int = 1536
 
     # Retrieval
     retrieval_top_k: int = 5
