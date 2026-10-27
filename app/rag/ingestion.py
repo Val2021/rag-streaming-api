@@ -1,6 +1,9 @@
 from pathlib import Path
 from typing import Any
 
+from docling.datamodel.base_models import InputFormat
+from docling.datamodel.pipeline_options import PdfPipelineOptions
+from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.chunking import HybridChunker
 from docling.document_converter import DocumentConverter
 from docling_core.transforms.chunker.tokenizer.huggingface import (
@@ -31,6 +34,17 @@ class DocumentIngestionService:
             merge_peers=True,
         )
 
+        pipeline_options = PdfPipelineOptions()
+        pipeline_options.do_ocr = False
+
+        self.converter = DocumentConverter(
+            format_options={
+                InputFormat.PDF: PdfFormatOption(
+                    pipeline_options=pipeline_options
+                )
+            }
+        )
+
     def load_document(self, file_path: Path):
         result = self.converter.convert(
             source=file_path
@@ -45,11 +59,18 @@ class DocumentIngestionService:
     ) -> list[dict[str, Any]]:
         chunks = []
 
-        for index, chunk in enumerate(
-            self.chunker.chunk(dl_doc=document)
-        ):
+        for chunk in self.chunker.chunk(dl_doc=document):
+
+            text = chunk.text.strip()
+
+            if len(text) < 100:
+                continue
+
+            if text.count("....") >= 3:
+                continue
+
             metadata = {
-                "chunk_id": index,
+                "chunk_id": len(chunks),
                 "source": source_name,
             }
 
@@ -66,7 +87,7 @@ class DocumentIngestionService:
 
             chunks.append(
                 {
-                    "text": chunk.text,
+                    "text": text,
                     "metadata": metadata,
                 }
             )
