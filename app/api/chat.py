@@ -68,11 +68,15 @@ async def chat_stream(
                 + "\n\n"
             )
 
+            full_response = []
+
             async for delta in llm_service.stream_response(
                 query=request.query,
                 documents=documents,
                 model=request.model,
             ):
+                full_response.append(delta)
+
                 yield (
                     "data: "
                     + json.dumps(
@@ -84,6 +88,20 @@ async def chat_stream(
                     )
                     + "\n\n"
                 )
+
+            final_text = "".join(full_response)
+
+            yield (
+                "data: "
+                + json.dumps(
+                    {
+                        "type": "final",
+                        "text": final_text,
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n\n"
+            )
 
             yield (
                 "data: "
