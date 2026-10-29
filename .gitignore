@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+__pycache__/
+*.pyc
 
 # Virtual environments
 .venv/
@@ -44,3 +46,6 @@ data/*
 # Local model / cache files
 .cache/
 huggingface/
+
+# Local ingestion state
+.ingest_checkpoint.json
