@@ -569,3 +569,18 @@ Since the runtime API does not process PDFs during normal requests, ingestion de
 ### Authentication and rate limiting
 
 A production version should protect model-backed endpoints with authentication and application-level rate limiting.
+
+---
+
+## AI-assisted development
+
+AI was used as a supporting tool during development, mainly for:
+
+- discussing architecture and implementation alternatives;
+- reviewing code structure and design decisions;
+- debugging integration and deployment issues;
+- improving technical documentation.
+
+All suggestions were reviewed and adapted before being incorporated into the project.
+
+The implementation was validated through local tests, retrieval tests, streaming tests, and the deployed API.
